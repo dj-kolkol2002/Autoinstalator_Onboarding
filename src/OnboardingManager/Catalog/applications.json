@@ -1,0 +1,67 @@
+[
+  {
+    "name": "7-Zip",
+    "packageId": "7zip.7zip",
+    "provider": "winget",
+    "category": "Utilities",
+    "scope": "machine",
+    "isSelected": true
+  },
+  {
+    "name": "Google Chrome",
+    "packageId": "Google.Chrome",
+    "provider": "winget",
+    "category": "Browsers",
+    "scope": "machine",
+    "isSelected": true
+  },
+  {
+    "name": "Mozilla Firefox ESR",
+    "packageId": "Mozilla.Firefox.ESR",
+    "provider": "winget",
+    "category": "Browsers",
+    "scope": "machine",
+    "isSelected": false
+  },
+  {
+    "name": "Adobe Acrobat Reader 64-bit",
+    "packageId": "Adobe.Acrobat.Reader.64-bit",
+    "provider": "winget",
+    "category": "Documents",
+    "scope": "machine",
+    "isSelected": true
+  },
+  {
+    "name": "Microsoft Teams",
+    "packageId": "Microsoft.Teams",
+    "provider": "winget",
+    "category": "Communication",
+    "scope": "machine",
+    "isSelected": true
+  },
+  {
+    "name": "Citrix Workspace",
+    "packageId": "Citrix.Workspace",
+    "provider": "winget",
+    "category": "Remote work",
+    "scope": "machine",
+    "isSelected": false
+  },
+  {
+    "name": "Microsoft PowerToys",
+    "packageId": "Microsoft.PowerToys",
+    "provider": "winget",
+    "category": "Utilities",
+    "scope": "machine",
+    "isSelected": false
+  },
+  {
+    "name": "Microsoft OneDrive",
+    "packageId": "Microsoft.OneDrive",
+    "provider": "winget",
+    "category": "Cloud",
+    "scope": "machine",
+    "isSelected": true
+  }
+]
+

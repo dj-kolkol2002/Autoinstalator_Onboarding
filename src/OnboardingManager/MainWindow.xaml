@@ -1,0 +1,190 @@
+<Window x:Class="OnboardingManager.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Onboarding Manager" Height="800" Width="1180"
+        MinHeight="680" MinWidth="980"
+        WindowStartupLocation="CenterScreen"
+        Background="{StaticResource BackgroundBrush}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="92" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="78" />
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Background="#0F172A" Padding="28,18">
+            <Grid>
+                <StackPanel>
+                    <TextBlock Text="ONBOARDING MANAGER" Foreground="White" FontSize="25" FontWeight="SemiBold" />
+                    <TextBlock Text="Windows 11 workstation and Active Directory setup"
+                               Foreground="#CBD5E1" FontSize="13" Margin="0,5,0,0" />
+                </StackPanel>
+                <Border HorizontalAlignment="Right" VerticalAlignment="Center" Background="#1E293B"
+                        CornerRadius="8" Padding="15,9">
+                    <TextBlock Text="Administrator mode" Foreground="#93C5FD" FontWeight="SemiBold" />
+                </Border>
+            </Grid>
+        </Border>
+
+        <Border Grid.Row="1" Margin="22" Background="White" CornerRadius="10" Padding="18">
+            <TabControl IsEnabled="{Binding IsNotBusy}">
+                <TabItem Header="1. System">
+                    <Grid Margin="20">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*" />
+                            <ColumnDefinition Width="3*" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Margin="0,0,24,0">
+                            <TextBlock Text="Preflight check" FontSize="22" FontWeight="SemiBold" />
+                            <TextBlock Text="The application checks all requirements before making changes."
+                                       Foreground="{StaticResource MutedBrush}" Margin="0,6,0,18" />
+                            <Button Content="Refresh check" HorizontalAlignment="Left" Click="RefreshPreflight_Click" />
+                        </StackPanel>
+                        <Border Grid.Column="1" Background="#F8FAFC" CornerRadius="8" Padding="20">
+                            <TextBlock Text="{Binding PreflightText}" FontFamily="Consolas" FontSize="14" TextWrapping="Wrap" />
+                        </Border>
+                    </Grid>
+                </TabItem>
+
+                <TabItem Header="2. Host and domain">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <Grid Margin="20">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="28" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <TextBlock Text="Computer identity" FontSize="22" FontWeight="SemiBold" />
+                                <TextBlock Text="Host name" Margin="0,20,0,0" />
+                                <TextBox Text="{Binding ComputerName, UpdateSourceTrigger=PropertyChanged}" MaxLength="15" />
+                                <TextBlock Text="Up to 15 characters: letters, numbers, and hyphens."
+                                           Foreground="{StaticResource MutedBrush}" TextWrapping="Wrap" />
+
+                                <CheckBox Content="Join this computer to Active Directory"
+                                          IsChecked="{Binding JoinDomain}" Margin="0,28,0,6" />
+                                <TextBlock Text="This operation runs after application installation and requires a restart."
+                                           Foreground="{StaticResource MutedBrush}" TextWrapping="Wrap" />
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="2" IsEnabled="{Binding JoinDomain}">
+                                <TextBlock Text="Active Directory" FontSize="22" FontWeight="SemiBold" />
+                                <TextBlock Text="Domain FQDN" Margin="0,20,0,0" />
+                                <TextBox Text="{Binding DomainName, UpdateSourceTrigger=PropertyChanged}" />
+                                <TextBlock Text="Join account (DOMAIN\user or user@domain)" />
+                                <TextBox Text="{Binding DomainUser, UpdateSourceTrigger=PropertyChanged}" />
+                                <TextBlock Text="Password — held in memory only" />
+                                <PasswordBox x:Name="DomainPasswordBox" />
+                                <TextBlock Text="Organizational unit OU (optional)" />
+                                <TextBox Text="{Binding OuPath, UpdateSourceTrigger=PropertyChanged}" />
+                                <TextBlock Text="Example: OU=Computers,OU=Warsaw,DC=corp,DC=local"
+                                           Foreground="{StaticResource MutedBrush}" TextWrapping="Wrap" />
+                                <Button Content="Test domain connection" HorizontalAlignment="Left"
+                                        Margin="0,18,0,6" Click="TestDomain_Click" />
+                                <TextBlock Text="{Binding DomainCheckText}" TextWrapping="Wrap" />
+                            </StackPanel>
+                        </Grid>
+                    </ScrollViewer>
+                </TabItem>
+
+                <TabItem Header="3. Applications">
+                    <Grid Margin="18">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <StackPanel Margin="0,0,0,12">
+                            <TextBlock Text="Application catalog" FontSize="22" FontWeight="SemiBold" />
+                            <TextBlock Text="Select applications to install automatically. The catalog can be edited in applications.json."
+                                       Foreground="{StaticResource MutedBrush}" Margin="0,5,0,0" />
+                        </StackPanel>
+                        <DataGrid Grid.Row="1" ItemsSource="{Binding Applications}" AutoGenerateColumns="False"
+                                  CanUserAddRows="False" HeadersVisibility="Column" Margin="0,0,0,12">
+                            <DataGrid.Columns>
+                                <DataGridCheckBoxColumn Header="Install" Binding="{Binding IsSelected}" Width="80" />
+                                <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="2*" IsReadOnly="True" />
+                                <DataGridTextColumn Header="Category" Binding="{Binding Category}" Width="*" IsReadOnly="True" />
+                                <DataGridTextColumn Header="Provider" Binding="{Binding Provider}" Width="110" IsReadOnly="True" />
+                                <DataGridTextColumn Header="Identifier" Binding="{Binding PackageId}" Width="2*" IsReadOnly="True" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        <Border Grid.Row="2" Background="#F8FAFC" CornerRadius="8" Padding="14">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="150" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <ComboBox ItemsSource="{Binding Providers}" SelectedItem="{Binding CustomProvider}"
+                                          Margin="4" Padding="8" />
+                                <TextBox Grid.Column="1" Text="{Binding CustomPackageId}" Margin="4"
+                                         ToolTip="Package identifier, for example VideoLAN.VLC" />
+                                <TextBox Grid.Column="2" Text="{Binding CustomPackageName}" Margin="4"
+                                         ToolTip="Friendly application name" />
+                                <Button Grid.Column="3" Content="Add package" Click="AddPackage_Click" />
+                            </Grid>
+                        </Border>
+                    </Grid>
+                </TabItem>
+
+                <TabItem Header="4. Plan">
+                    <Grid Margin="20">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,14">
+                            <StackPanel>
+                                <TextBlock Text="Operation plan" FontSize="22" FontWeight="SemiBold" />
+                                <TextBlock Text="Review the changes before executing them."
+                                           Foreground="{StaticResource MutedBrush}" Margin="0,5,0,0" />
+                            </StackPanel>
+                            <Button Content="Show plan" Margin="28,0,0,0" Click="BuildPlan_Click" />
+                        </StackPanel>
+                        <TextBox Grid.Row="1" Text="{Binding PlanText}" IsReadOnly="True" AcceptsReturn="True"
+                                 FontFamily="Consolas" FontSize="14" VerticalScrollBarVisibility="Auto"
+                                 Background="#F8FAFC" TextWrapping="Wrap" />
+                    </Grid>
+                </TabItem>
+
+                <TabItem Header="5. Logs">
+                    <Grid Margin="20">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <StackPanel Margin="0,0,0,12">
+                            <TextBlock Text="Execution log" FontSize="22" FontWeight="SemiBold" />
+                            <TextBlock Text="{Binding LogPath, StringFormat=Log file: {0}}"
+                                       Foreground="{StaticResource MutedBrush}" Margin="0,5,0,0" />
+                        </StackPanel>
+                        <ListBox Grid.Row="1" ItemsSource="{Binding Logs}" FontFamily="Consolas"
+                                 FontSize="12" Background="#0F172A" Foreground="#E2E8F0" />
+                    </Grid>
+                </TabItem>
+            </TabControl>
+        </Border>
+
+        <Border Grid.Row="2" Background="White" BorderBrush="#E2E8F0" BorderThickness="0,1,0,0" Padding="22,12">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="260" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel VerticalAlignment="Center">
+                    <TextBlock Text="{Binding StatusText}" FontWeight="SemiBold" />
+                    <ProgressBar Value="{Binding Progress}" Height="7" Margin="0,8,18,0" />
+                </StackPanel>
+                <Button Grid.Column="1" Content="Cancel" IsEnabled="{Binding IsBusy}"
+                        HorizontalAlignment="Right" Click="Cancel_Click" />
+                <Button Grid.Column="2" Content="Run onboarding" IsEnabled="{Binding IsNotBusy}"
+                        Background="{StaticResource PrimaryBrush}" Foreground="White" FontWeight="SemiBold"
+                        Padding="22,10" Click="Execute_Click" />
+            </Grid>
+        </Border>
+    </Grid>
+</Window>
+
